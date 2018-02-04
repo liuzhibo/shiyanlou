@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-
+'''
+挑战3：工资计算器读写数据文件
+'''
 import sys
 import csv
 from collections import namedtuple
@@ -21,19 +23,18 @@ ITEM_TABLE = [
     Item(0, 0.03, 0)
 ]
 
-
 class Args:
     def __init__(self):
-        if len(sys.argv) < 2:
+        if len(sys.argv) <2:
             print('Parameter Error27')
             exit(1)
-        self.args = sys.argv[1:]
+        self.args=sys.argv[1:]
 
-    def get_path(self, option):
+    def get_path(self,option):
         try:
-            index = self.args.index(option)
-            return self.args[index + 1]
-        except(ValueError, IndexError):
+            index=self.args.index(option)
+            return self.args[index+1]
+        except(ValueError,IndexError):
             print('Parameter Error36')
             exit(1)
 
@@ -49,27 +50,25 @@ class Args:
     def get_gongzi_path(self):
         return self.get_path('-o')
 
-
-args = Args()
-
+args=Args()
 
 class Config:
     def __init__(self):
-        self.config = self._read_config()
+        self.config=self._read_config()
 
     def _read_config(self):
-        config = {}
+        config={}
         with open(args.get_config_path) as f:
             for line in f.readlines():
-                key, value = line.strip().split('=')
+                key,value=line.strip().split('=')
                 try:
-                    config[key.strip()] = float(value)
+                    config[key.strip()]=float(value)
                 except ValueError:
                     print('Parameter Error65')
                     exit(1)
         return config
 
-    def _get_config_value(self, key):
+    def _get_config_value(self,key):
         try:
             return self.config[key]
         except KeyError:
@@ -93,73 +92,68 @@ class Config:
                     self._get_config_value('ShengYu'),
                     self._get_config_value('GongJiJin')])
 
+config=Config()
 
-config = Config()
 
 
 class UserData:
 
     def __init__(self):
-        self.userdata = self._read_userdata()
+        self.userdata=self._read_userdata()
 
     def _read_userdata(self):
-        userdata = []
+        userdata=[]
         with open(args.get_userdata_path) as f:
             for line in f.readlines():
-                user, gongzistr = line.strip().split(',')
+                user,gongzistr= line.strip().split(',')
                 try:
-                    gongzi = int(gongzistr)
+                    gongzi=int(gongzistr)
                 except ValueError:
                     print('Paremater Error110')
                     exit()
-                userdata.append((user, gongzi))
+                userdata.append((user,gongzi))
         return userdata
-
     def __iter__(self):
         return iter(self.userdata)
 
-
 ud = UserData()
-
-
 class Calculate:
 
     @staticmethod
     def calc_baoxian(money):
         if money < config.get_Lvalue:
-            return config.get_Lvalue * config.get_totalrate
+            return config.get_Lvalue*config.get_totalrate
         if money > config.get_Hvalue:
-            return config.get_Hvalue * config.get_totalrate
+            return config.get_Hvalue*config.get_totalrate
         else:
-            return money * config.get_totalrate
-
+            return money*config.get_totalrate
     @classmethod
-    def calc_tax_daoshoumoney(cls, money):
-        daoshoumoney = money - cls.calc_baoxian(money)
-        tax_part = daoshoumoney - START_POINT
-        if tax_part <= 0:
-            return '0.00', '{:.2f}'.format(daoshoumoney)
+    def calc_tax_daoshoumoney(cls,money):
+        daoshoumoney=money-cls.calc_baoxian(money)
+        tax_part=daoshoumoney-START_POINT
+        if tax_part <=0:
+            return '0.00','{:.2f}'.format(daoshoumoney)
         for x in ITEM_TABLE:
             if tax_part > x.start_point:
-                tax = tax_part * x.tax_rate - x.quick_sub
-                return '{:.2f}'.format(tax), '{:.2f}'.format(daoshoumoney - tax)
+                tax=tax_part*x.tax_rate-x.quick_sub
+                return '{:.2f}'.format(tax),'{:.2f}'.format(daoshoumoney-tax)
 
     def export_info(self):
-        result = []
-        for user, money in ud.userdata:
-            data = [user, money]
-            tax, daoshoumoney = self.calc_tax_daoshoumoney(money)
-            baoxian = '{:.2f}'.format(self.calc_baoxian(money))
-            data += [baoxian, tax, daoshoumoney]
+        result=[]
+        for user,money in ud.userdata:
+            data=[user,money]
+            tax,daoshoumoney=self.calc_tax_daoshoumoney(money)
+            baoxian='{:.2f}'.format(self.calc_baoxian(money))
+            data+=[baoxian,tax,daoshoumoney]
             result.append(data)
         return result
 
     def export(self):
-        with open(args.get_gongzi_path, 'w') as f:
-            w = csv.writer(f)
+        with open(args.get_gongzi_path,'w') as f:
+            w=csv.writer(f)
             w.writerows(self.export_info())
 
-
-if __name__ == '__main__':
-    c = Calculate()
+if __name__=='__main__':
+    c=Calculate()
     c.export()
+

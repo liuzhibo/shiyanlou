@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+'''
+挑战1：实现个税计算器
+'''
 import sys
 
 if len(sys.argv) != 2:

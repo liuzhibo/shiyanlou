@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+'''
+挑战2：完善工资计算器
+'''
 import sys
 
 
