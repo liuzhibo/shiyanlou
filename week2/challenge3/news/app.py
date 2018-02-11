@@ -68,9 +68,8 @@ def index():
 
 @app.route('/file/<int:file_id>')
 def file(file_id):
-
     files = Files.objects(file_id=file_id)
-    print(files[0]['create_time'])
+    #print(files[0]['create_time'])
     return render_template('file.html', files=files[0])
 
 
