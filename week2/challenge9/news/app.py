@@ -79,6 +79,7 @@ class Category(db.Model):
 
 
 def insert_datas():
+    db.create_all()
     java = Category('Java')
     python = Category('Python')
     file1 = File('Hello Java', datetime.utcnow(),
