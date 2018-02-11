@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Index</title>
+</head>
+
+<body>
+  <ul>
+    {% for file in files %}
+    <li>
+      <a href="{{ url_for('file', file_id=file[0].file_id) }}" target="_blank">{{ file[0].title }}</a> &nbsp;&nbsp; &nbsp;&nbsp;
+      <span>category：</span>
+      <span style="color:red">{{ file[2] }} </span> &nbsp;&nbsp; &nbsp;&nbsp;
+      <span>tag：</span> {% for f in file[1] %}
+      <span style="color:blue"> {{f}} </span> {% endfor %}
+    </li>
+    {% endfor %}
+  </ul>
+</body>
+
+</html>
