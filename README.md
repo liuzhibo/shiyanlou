@@ -26,7 +26,7 @@
 
  - 第三周
 
- 1.挑战10   [✘] 挑战：Python3 获取 MongoDB 数据
+ 1.挑战10   [√] 挑战：Python3 获取 MongoDB 数据
 
  2.挑战11   [✘] 挑战：Python3 处理 Excel 文件
 
