@@ -32,6 +32,6 @@
 
  3.挑战12   [√] 挑战：Python3 实现端口扫描器
 
- 4.挑战13   [✘] 挑战：Python3 处理 Nginx 日志
+ 4.挑战13   [√] 挑战：Python3 处理 Nginx 日志
 
  5.挑战14   [√] 挑战：Flask Web 应用 BUG 修复
