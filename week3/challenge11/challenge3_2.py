@@ -1,27 +1,55 @@
-# -*- coding: utf-8 -*-
+import datetime
+from openpyxl import load_workbook
+from openpyxl import Workbook
 
-from openpyxl import load_workbook  # 可以用来载入已有数据表格
-from openpyxl import Workbook  # 可以用来处理新的数据表格
-import datetime  # 可以用来处理时间相关的数据
+# 读取文件以及相应的表
+wb = load_workbook('courses.xlsx')
+students_sheet = wb['students']
+time_sheet = wb['time']
 
 
 def combine():
-    '''
-    该函数可以用来处理原数据文件：
-    1. 合并表格并写入的 combine 表中
-    2. 保存原数据文件
-    '''
-    TODO
+    # 创建 combine 表
+    combine_sheet = wb.create_sheet(title='combine')
+    # 向 combine 表添加表头
+    combine_sheet.append(['创建时间', '课程名称', '学习人数', '学习时间'])
+    # 合并表格并依次添加到 combine 表中
+    for stu in students_sheet.values:
+        # 去掉包含表头的一行
+        if stu[2] != '学习人数':
+            # 遍历匹配学习时间数据
+            for time in time_sheet.values:
+                if time[1] == stu[1]:
+                    # 添加记录到 combine 表中
+                    combine_sheet.append(list(stu) + [time[2]])
+    # 覆盖保存 courses.xlsx
+    wb.save('courses.xlsx')
 
 
 def split():
-    '''
-    该函数可以用来分割文件：
-    1. 读取 combine 表中的数据
-    2. 将数据按时间分割
-    3. 写入不同的数据表中
-    '''
-    TODO
+    combine_sheet = wb['combine']
+    # 存储 combine 表中的年份
+    split_name = []
+    # 遍历表获取每条数据对应的年份
+    for item in combine_sheet.values:
+        if item[0] != '创建时间':
+            split_name.append(item[0].strftime("%Y"))
+
+    # 分别储存数据
+    for name in set(split_name):
+        # 创建文件
+        wb_temp = Workbook()
+        # 删除已有的默认 Sheet 表
+        wb_temp.remove(wb_temp.active)
+        # 创建相应年份命名的表
+        ws = wb_temp.create_sheet(title=name)
+        # 写入相应年份的数据
+        for item_by_year in combine_sheet.values:
+            if item_by_year[0] != '创建时间':
+                if item_by_year[0].strftime("%Y") == name:
+                    ws.append(item_by_year)
+        # 存储相应年份的数据文件
+        wb_temp.save(f'{name}.xlsx')
 
 
 # 执行
