@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Integer
 from sqlalchemy import Date
 
 engine = create_engine(
-    'mysql://root:Aa111111@localhost/shiyanlou?charset=utf8')
+    'mysql://root:xxxxx@localhost/shiyanlou?charset=utf8')
 Base = declarative_base()
 
 
