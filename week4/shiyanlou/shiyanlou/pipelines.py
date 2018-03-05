@@ -1,9 +1,50 @@
+from datetime import datetime
 from sqlalchemy.orm import sessionmaker
-from shiyanlou.models import Course, engine
+from shiyanlou.models import Course, User, engine
+from shiyanlou.items import CourseItem, UserItem
+from scrapy.exceptions import DropItem
 
 
 class ShiyanlouPipeline(object):
 
+    def process_item(self, item, spider):
+        """ 对不同的 item 使用不同的处理函数
+        """
+        if isinstance(item, CourseItem):
+            self._process_course_item(item)
+        else:
+            self._process_user_item(item)
+        return item
+
+    def _process_course_item(self, item):
+        item['students'] = int(item['students'])
+        self.session.add(Course(**item))
+
+    def _process_user_item(self, item):
+        # 抓取到的数据类似 'L100'，需要去掉 'L' 然后转化为 int
+        item['level'] = int(item['level'][1:])
+        if item['level'] < 100:
+            raise DropItem('level less than 100.')
+        item['user_id'] = int(item['user_id'])
+        # 抓去到的数据类似 '2017-01-01 加入实验楼'
+        # 其中的把日期字符串转换为 date 对象
+        item['join_date'] = datetime.strptime(
+            item['join_date'].split()[0], '%Y-%m-%d').date()
+        # 学习课程数目转化为 int
+        item['learn_courses_num'] = int(item['learn_courses_num'])
+        # 添加到 session
+        self.session.add(User(**item))
+
+    def open_spider(self, spider):
+        Session = sessionmaker(bind=engine)
+        self.session = Session()
+
+    def close_spider(self, spider):
+        self.session.commit()
+        self.session.close()
+
+
+'''
     def process_item(self, item, spider):
         # 提取的学习人数是字符串，把它转换成 int
         item['students'] = int(item['students'])
@@ -34,3 +75,4 @@ class ShiyanlouPipeline(object):
         """
         self.session.commit()
         self.session.close()
+'''
