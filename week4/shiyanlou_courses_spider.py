@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import scrapy
+# scrapy runspider shiyanlou_courses_spider.py - o data.xml
 
 
 class ShiyanlouCoursesSpider(scrapy.Spider):
